@@ -1,15 +1,27 @@
 import React, { Component } from 'react';
 import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
+import ListUI from '@ckeditor/ckeditor5-list/src/listui';
+import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 
 
 class App extends Component {
     render() {
         const config = {
-          toolbar: [ 'heading', '|', 'bold', 'italic', '|', 'bulletedList', 'numberedList' ],
+          plugins: [ Essentials, Bold, Italic, Paragraph, WordCount, Heading, Paragraph, HeadingButtonsUI, ParagraphButtonUI, ListEditing, ListUI],
+          toolbar: [ 'paragraph', 'heading2', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList'],
           heading: {
             options: [
-                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                { model: 'paragraph', title: 'Normal', class: 'ck-heading_paragraph' },
                 { model: 'heading2', view: 'h2', title: 'Heading', class: 'ck-heading_heading' }
             ]
         }
@@ -21,7 +33,11 @@ class App extends Component {
                     config = { config }
                     data="<p>Hello from CKEditor 5!</p>"
                     onInit={ editor => {
-                        // You can store the "editor" and use when it is needed.
+                        const wordCountPlugin = editor.plugins.get( 'WordCount' );
+                        const wordCountWrapper = document.getElementById( 'word-count' );
+
+                        wordCountWrapper.appendChild( wordCountPlugin.wordCountContainer );
+
                         console.log( 'Editor is ready to use!', editor );
                     } }
                     onChange={ ( event, editor ) => {
@@ -35,6 +51,7 @@ class App extends Component {
                         console.log( 'Focus.', editor );
                     } }
                 />
+                <div id="word-count"></div>
             </div>
         );
     }
